@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WeatherAPIexample</title>
+    <!--Bootstrap to make styling work-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!--Code snippets Css-->
+    <style>
+        *FOR PRETTY PRINT OF CODE*/
+        /*linenums add this as a class to the pre tag to show lines. all numbers*/
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8
+        { list-style-type: decimal !important }                         /*shows all the line numbers but makes tabs when copying and pasting the code*/
+
+        /* desert scheme ported from vim to google prettify */
+        pre.prettyprint { display: block; background-color: black }
+        pre .nocode { background-color: none; color: #000 }
+        pre .str { color: #ffa0a0 }                                         /* string  - pink */
+        pre .kwd { color: #f0e68c; font-weight: bold }
+        pre .com { color: #87ceeb }                                         /* comment - skyblue */
+        pre .typ { color: #98fb98 }                                         /* type    - lightgreen */
+        pre .lit { color: #cd5c5c }                                         /* literal - darkred */
+        pre .pun { color: #fff }                                            /* punctuation */
+        pre .pln { color: #fff }                                            /* plaintext */
+        pre .tag { color: #f0e68c; font-weight: bold }                      /* html/xml tag    - lightyellow */
+        pre .atn { color: #bdb76b; font-weight: bold }                      /* attribute name  - khaki */
+        pre .atv { color: #ffa0a0 }                                         /* attribute value - pink */
+        pre .dec { color: #98fb98 }                                         /* decimal         - lightgreen */
+
+        /* Specify class=linenums on a pre to get line numbering */
+        ol.linenums { margin-top: 0; margin-bottom: 0; color: #AEAEAE } /* IE indents via margin-left */
+        li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8 { list-style-type: none }
+        /* Alternate shading for lines */
+        li.L1,li.L3,li.L5,li.L7,li.L9 {background: black !important;}
+
+        @media print {
+            pre.prettyprint { background-color: none }
+            pre .str, code .str { color: #060 }
+            pre .kwd, code .kwd { color: #006; font-weight: bold }
+            pre .com, code .com { color: #600; font-style: italic }
+            pre .typ, code .typ { color: #404; font-weight: bold }
+            pre .lit, code .lit { color: #044 }
+            pre .pun, code .pun { color: #440 }
+            pre .pln, code .pln { color: #000 }
+            pre .tag, code .tag { color: #006; font-weight: bold }
+            pre .atn, code .atn { color: #404 }
+            pre .atv, code .atv { color: #060 }
+        }
+    </style>
+</head>
+<body
+    <div class="container" style="margin:20vh auto">
+        <div class="row">
+            <div class="col-xs-6 col-sm-3 col-sm-offset-3">
+                <h2>Simple <a href="https://openweathermap.org/">OWM</a> AJAX Example</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-6 col-sm-3 col-sm-offset-3">
+                <div id="error"></div>
+                <input type="text" name="city" id="city" class="form-control" placeholder="City Name, State"
+                       value="Chicago,Il" style="width:100%;margin-bottom:20px">
+                <button id="but" style="color: #000;margin-bottom:20px;background:#ff7133">Search City</button>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <div id="tempF">div id tempF.</div>
+                <div id="tempC">div id tempC.</div>
+                <div id="dscrptn">div id descrptn.</div>
+                <span id="myicon">div id myicon.</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12" style="padding:200px 0">
+                <h2>Below is the source code for this simple app. </h2>
+                <p>Use your own api key. I will leave mine for the time being but please don't abuse it.</p>
+                <p>Also contains bootstrap and prettify (for code display.) CSS and JS files</p>
+                <h4>Single click to select all. This function can be found below by the name of selectText()</h4>
+            <pre class="prettyprint lang-html" id="owmExample" onclick="selectText('owmExample')">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;WeatherAPIexample&lt;/title&gt;
+    &lt;!--Bootstrap to make styling work--&gt;
+    &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"&gt;
+    &lt;!--Code snippets Css--&gt;
+    &lt;style&gt;
+        *FOR PRETTY PRINT OF CODE*/
+        /*linenums add this as a class to the pre tag to show lines. all numbers*/
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8
+        { list-style-type: decimal !important }                         /*shows all the line numbers but makes tabs when copying and pasting the code*/
+
+        /* desert scheme ported from vim to google prettify */
+        pre.prettyprint { display: block; background-color: black }
+        pre .nocode { background-color: none; color: #000 }
+        pre .str { color: #ffa0a0 }                                         /* string  - pink */
+        pre .kwd { color: #f0e68c; font-weight: bold }
+        pre .com { color: #87ceeb }                                         /* comment - skyblue */
+        pre .typ { color: #98fb98 }                                         /* type    - lightgreen */
+        pre .lit { color: #cd5c5c }                                         /* literal - darkred */
+        pre .pun { color: #fff }                                            /* punctuation */
+        pre .pln { color: #fff }                                            /* plaintext */
+        pre .tag { color: #f0e68c; font-weight: bold }                      /* html/xml tag    - lightyellow */
+        pre .atn { color: #bdb76b; font-weight: bold }                      /* attribute name  - khaki */
+        pre .atv { color: #ffa0a0 }                                         /* attribute value - pink */
+        pre .dec { color: #98fb98 }                                         /* decimal         - lightgreen */
+
+        /* Specify class=linenums on a pre to get line numbering */
+        ol.linenums { margin-top: 0; margin-bottom: 0; color: #AEAEAE } /* IE indents via margin-left */
+        li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8 { list-style-type: none }
+        /* Alternate shading for lines */
+        li.L1,li.L3,li.L5,li.L7,li.L9 {background: black !important;}
+
+        @media print {
+            pre.prettyprint { background-color: none }
+            pre .str, code .str { color: #060 }
+            pre .kwd, code .kwd { color: #006; font-weight: bold }
+            pre .com, code .com { color: #600; font-style: italic }
+            pre .typ, code .typ { color: #404; font-weight: bold }
+            pre .lit, code .lit { color: #044 }
+            pre .pun, code .pun { color: #440 }
+            pre .pln, code .pln { color: #000 }
+            pre .tag, code .tag { color: #006; font-weight: bold }
+            pre .atn, code .atn { color: #404 }
+            pre .atv, code .atv { color: #060 }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body
+    &lt;div class="container" style="margin:30vh auto"&gt;
+        &lt;div class="row"&gt;
+            &lt;div class="col-xs-6 col-sm-3 col-sm-offset-3"&gt;
+                &lt;h2&gt;Simple &lt;a href="https://openweathermap.org/"&gt;OWM&lt;/a&gt; AJAX Example&lt;/h2&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class="row"&gt;
+            &lt;div class="col-xs-6 col-sm-3 col-sm-offset-3"&gt;
+                &lt;div id="error"&gt;&lt;/div&gt;
+                &lt;input type="text" name="city" id="city" class="form-control" placeholder="City Name, State"
+                       value="Chicago,Il" style="width:100%;margin-bottom:20px"&gt;
+                &lt;button id="but" style="color: #000;margin-bottom:20px;background:#ff7133"&gt;Search City&lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div class="col-xs-12 col-sm-3"&gt;
+                &lt;div id="tempF"&gt;div id tempF.&lt;/div&gt;
+                &lt;div id="tempC"&gt;div id tempC.&lt;/div&gt;
+                &lt;div id="dscrptn"&gt;div id descrptn.&lt;/div&gt;
+                &lt;span id="myicon"&gt;div id myicon.&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class="row"&gt;
+            &lt;div class="col-xs-12 col-sm-12"&gt;
+            &lt;pre class="prettyprint lang-html" id="owmExample" onclick="selectText('owmExample')"&gt;&lt;/pre&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+&lt;!--jQuery --&gt;
+&lt;script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"&gt;&lt;/script&gt;
+&lt;!--JavaScript, Bootstrap --&gt;
+&lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"&gt;&lt;/script&gt;
+&lt;!--For displaying code--&gt;
+&lt;script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+    //It has to be outside of the document ready so that the function is declared before the onclick
+    //Ans.It's because that function isn't in a global context, which is where your onclick="" is looking for it.
+    //Ref: https://stackoverflow.com/questions/3371632/why-cant-i-use-onclick-to-execute-a-function-inside-a-jquery-document-ready
+    //
+    //http://stackoverflow.com/questions/1173194/select-all-div-text-with-single-mouse-click
+    //Example of how to use: &lt;div id="selectable" onclick="selectText('selectable')"&gt;http://example.com/page.html&lt;/div&gt;
+    function selectText(containerid) {
+        var node = document.getElementById(containerid);
+
+        if (document.selection) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(node);
+            range.select();
+        } else if (window.getSelection) {
+            var range = document.createRange();
+            range.selectNodeContents(node);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+        }
+    }
+
+    $( document ).ready(function() {
+        $('#but').click(function () {
+            var city = $('#city').val();
+            if (city != '') {
+                $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + city + "&appid=EnterYourAPIKeyHere&units=imperial", function (data) {
+                    console.log(data);
+                    console.log(data.weather[0].description);
+                    var fTemp = parseInt(data.main.temp);
+                    var cTemp = ((fTemp - 32) / 1.8).toFixed(2);
+                    $("#tempF").html(fTemp + " ℉");
+                    $("#tempC").html(cTemp + " ℃");
+                    $("#dscrptn").html(data.weather[0].description);
+                    $("#myicon").html("&lt;img src='http://openweathermap.org/img/w/" + data.weather[0].icon + ".png' alt='Icon depicting current weather.'&gt;");
+                });
+            } else {
+                $("#error").html('Field cannot be empty');
+            }
+        });
+    });
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+            </pre>
+            </div>
+        </div>
+    </div>
+
+<!--jQuery -->
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+<!--JavaScript, Bootstrap -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!--For displaying code-->
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<script>
+    //It has to be outside of the document ready so that the function is declared before the onclick
+    //Ans.It's because that function isn't in a global context, which is where your onclick="" is looking for it.
+    //Ref: https://stackoverflow.com/questions/3371632/why-cant-i-use-onclick-to-execute-a-function-inside-a-jquery-document-ready
+    //
+    //http://stackoverflow.com/questions/1173194/select-all-div-text-with-single-mouse-click
+    //Example of how to use: <div id="selectable" onclick="selectText('selectable')">http://example.com/page.html</div>
+    function selectText(containerid) {
+        var node = document.getElementById(containerid);
+
+        if (document.selection) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(node);
+            range.select();
+        } else if (window.getSelection) {
+            var range = document.createRange();
+            range.selectNodeContents(node);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+        }
+    }
+
+    $( document ).ready(function() {
+        $('#but').click(function () {
+            var city = $('#city').val();
+            if (city != '') {
+                $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + city + "&appid=eacf1623c4f1fe8a66c25428114df0d3&units=imperial", function (data) {
+                    console.log(data);
+                    console.log(data.weather[0].description);
+                    var fTemp = parseInt(data.main.temp);
+                    var cTemp = ((fTemp - 32) / 1.8).toFixed(2);
+                    $("#tempF").html(fTemp + " ℉");
+                    $("#tempC").html(cTemp + " ℃");
+                    $("#dscrptn").html(data.weather[0].description);
+                    $("#myicon").html("<img src='http://openweathermap.org/img/w/" + data.weather[0].icon + ".png' alt='Icon depicting current weather.'>");
+                });
+            } else {
+                $("#error").html('Field cannot be empty');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
